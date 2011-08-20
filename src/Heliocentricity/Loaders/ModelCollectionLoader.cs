@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using Heliocentricity.Common.Loaders;
 using Heliocentricity.Common.Locators;
@@ -17,9 +18,10 @@ namespace Heliocentricity.Loaders
             _modelLoader = modelLoader;
         }
 
-        public IDictionary<string, IList<dynamic>> LoadModelCollection(RunnerOptions runnerOptions)
+        public dynamic LoadModelCollection(RunnerOptions runnerOptions)
         {
-            var modelCollection = new Dictionary<string, IList<dynamic>>();
+            var modelCollection = new ExpandoObject();
+            var m = modelCollection as IDictionary<string, object>;
             var directories = _directoryLocator.Directories(runnerOptions);
             foreach(var directory in directories)
             {
@@ -30,7 +32,7 @@ namespace Heliocentricity.Loaders
                 }
 
                 var model = _modelLoader.LoadModel(runnerOptions, directory);
-                modelCollection.Add(modelName, model);
+                m[modelName] = model;
             }
             return modelCollection;
         }
