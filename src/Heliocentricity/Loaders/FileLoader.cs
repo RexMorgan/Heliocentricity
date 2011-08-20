@@ -23,7 +23,9 @@ namespace Heliocentricity.Loaders
         {
             try
             {
+                _logger.Info(string.Format("Loading file {0}...", Path.GetFileName(fileName)));
                 var fileContents = File.ReadAllLines(fileName);
+                _logger.Debug(string.Format("Found {0} lines in file.", fileContents.Length));
                 dynamic file = new ExpandoObject();
                 var f = file as IDictionary<string, object>;
                 var loadingContent = false;
@@ -32,13 +34,19 @@ namespace Heliocentricity.Loaders
                 {
                     if (string.IsNullOrWhiteSpace(line))
                     {
+                        _logger.Debug("Found break between properties and content.");
                         loadingContent = true;
                         continue;
                     }
 
                     if(!loadingContent)
                     {
-                        f[_propertySplitter.GetKey(line)] = _propertySplitter.GetValue(line);
+                        var key = _propertySplitter.GetKey(line);
+                        var value = _propertySplitter.GetValue(line);
+
+                        _logger.Debug(string.Format("Adding property {0} with value {1}", key, value));
+
+                        f[key] = value;
                     }
                     else
                     {
