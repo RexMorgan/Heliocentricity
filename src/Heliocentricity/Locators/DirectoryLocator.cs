@@ -11,6 +11,7 @@ namespace Heliocentricity.Locators
         {
             return Directory
                 .GetDirectories(options.WorkingDirectory, "_*")
+                .Where(x => !Path.GetFileName(x).Equals("_templates"))
                 .ToList();
         }
     }

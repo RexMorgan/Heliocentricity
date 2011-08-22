@@ -2,6 +2,7 @@ using System;
 using Heliocentricity.Common;
 using Heliocentricity.Common.Loaders;
 using Heliocentricity.Common.Logging;
+using Heliocentricity.Correlation;
 
 namespace Heliocentricity
 {
@@ -9,10 +10,12 @@ namespace Heliocentricity
     {
         private readonly ILogger _logger;
         private readonly IModelCollectionLoader _modelCollectionLoader;
+        private readonly ICorrelator _correlator;
 
-        public Runner(ILogger logger, IModelCollectionLoader modelCollectionLoader)
+        public Runner(ILogger logger, IModelCollectionLoader modelCollectionLoader, ICorrelator correlator)
         {
             _logger = logger;
+            _correlator = correlator;
             _modelCollectionLoader = modelCollectionLoader;
         }
 
@@ -26,6 +29,8 @@ namespace Heliocentricity
             _logger.Debug(runnerOptions.WorkingDirectory);
 
             var modelCollection = _modelCollectionLoader.LoadModelCollection(runnerOptions);
+
+            _correlator.Correlate(modelCollection, runnerOptions);
         }
     }
 }

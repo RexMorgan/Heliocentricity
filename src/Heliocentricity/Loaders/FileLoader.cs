@@ -28,6 +28,14 @@ namespace Heliocentricity.Loaders
                 _logger.Debug(string.Format("Found {0} lines in file.", fileContents.Length));
                 dynamic file = new ExpandoObject();
                 var f = file as IDictionary<string, object>;
+
+                if(f == null)
+                {
+                    _logger.Warn("Something's very wrong, ExpandoObject could not be cast to a Dictionary.");
+                    return null;
+                }
+
+                f["FileName"] = Path.GetFileName(fileName);
                 var loadingContent = false;
                 var contentBuilder = new StringBuilder();
                 foreach(var line in fileContents)
